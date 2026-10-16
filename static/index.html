@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>İGÜ TTO Bilgi Asistanı (Yerel)</title>
+<style>
+  :root {
+    --bg: #f4f5f7; --panel: #fff; --text: #1c1e21; --muted: #6b7280;
+    --accent: #7c3aed; --accent-2: #5b21b6; --border: #e5e7eb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; height: 100vh; background: var(--bg); color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    display: flex; flex-direction: column;
+  }
+  header {
+    padding: 13px 18px; background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff; flex-shrink: 0; position: relative; z-index: 2;
+  }
+  .header-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  header h1 { margin: 0; font-size: 17px; }
+  header p { margin: 4px 0 0; font-size: 12px; opacity: 0.9; }
+  .mode-control { position: relative; display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+  .mode-toggle, .mode-info {
+    color: #fff; border: 1px solid rgba(255,255,255,.45); background: rgba(255,255,255,.13);
+    cursor: pointer; transition: background .18s ease, transform .18s ease, border-color .18s ease;
+  }
+  .mode-toggle { min-height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 7px 11px; border-radius: 999px; font: inherit; font-size: 12px; }
+  .mode-toggle:hover, .mode-info:hover { background: rgba(255,255,255,.24); }
+  .mode-toggle:active, .mode-info:active { transform: scale(.97); }
+  .mode-info { width: 28px; height: 28px; border-radius: 50%; font-weight: 700; }
+  .mode-dot { width: 8px; height: 8px; border-radius: 50%; background: #d1d5db; box-shadow: 0 0 0 3px rgba(255,255,255,.13); }
+  .mode-toggle[aria-pressed="true"] .mode-dot { background: #86efac; }
+  .mode-tooltip {
+    position: absolute; top: calc(100% + 12px); right: 0; width: min(340px, calc(100vw - 28px));
+    padding: 14px 15px; color: #252238; background: #fff; border: 1px solid #e9ddff;
+    border-radius: 14px; box-shadow: 0 12px 34px rgba(35, 16, 75, .24);
+    opacity: 0; transform: translateY(-7px) scale(.98); transform-origin: top right;
+    pointer-events: none; visibility: hidden; transition: opacity .18s ease, transform .18s ease, visibility .18s;
+  }
+  .mode-tooltip::before { content: ""; position: absolute; right: 42px; top: -7px; width: 12px; height: 12px; background: #fff; border-left: 1px solid #e9ddff; border-top: 1px solid #e9ddff; transform: rotate(45deg); }
+  .mode-tooltip h2 { margin: 0 0 9px; font-size: 13px; }
+  .mode-tooltip p { margin: 0 0 8px; color: #4b465a; font-size: 12px; line-height: 1.5; opacity: 1; }
+  .mode-tooltip p:last-child { margin-bottom: 0; }
+  .mode-control:hover .mode-tooltip, .mode-control:focus-within .mode-tooltip, .mode-control.show-tooltip .mode-tooltip {
+    opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; visibility: visible;
+  }
+  .badge {
+    display: inline-block; background: rgba(255,255,255,0.2); border-radius: 999px;
+    padding: 2px 10px; font-size: 10.5px; margin-top: 6px;
+  }
+  #chat {
+    flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column;
+    gap: 12px; max-width: 720px; width: 100%; margin: 0 auto;
+  }
+  .msg { max-width: 88%; display: flex; flex-direction: column; gap: 4px; }
+  .msg.user { align-self: flex-end; align-items: flex-end; }
+  .msg.bot { align-self: flex-start; align-items: flex-start; }
+  .bubble {
+    padding: 10px 14px; border-radius: 16px; font-size: 14.5px; line-height: 1.55;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  .msg.user .bubble { background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+  .msg.bot .bubble { background: var(--panel); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+  .sources { font-size: 11px; color: var(--muted); padding: 0 4px; }
+  .sources a { color: var(--accent-2); text-decoration: none; }
+  .sources a:hover { text-decoration: underline; }
+  .error .bubble { background: #fee2e2; border-color: #fecaca; color: #991b1b; }
+  footer { flex-shrink: 0; padding: 10px 16px; background: var(--panel); border-top: 1px solid var(--border); }
+  #form { max-width: 720px; margin: 0 auto; display: flex; gap: 8px; }
+  #q { flex: 1; padding: 11px 14px; border-radius: 20px; border: 1px solid var(--border); font-size: 14.5px; outline: none; }
+  #q:focus { border-color: var(--accent); }
+  #send { background: var(--accent); color: #fff; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
+  #send:disabled { opacity: 0.5; }
+  .typing span { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); margin: 0 1px; animation: blink 1.2s infinite; }
+  .typing span:nth-child(2) { animation-delay: .2s; } .typing span:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink { 0%,80%,100%{opacity:.25} 40%{opacity:1} }
+  @media (max-width: 560px) {
+    header { padding: 11px 12px; }
+    .header-row { align-items: flex-start; gap: 8px; }
+    header h1 { font-size: 15px; }
+    header p { max-width: 260px; font-size: 11px; }
+    .mode-toggle { min-height: 32px; padding: 6px 8px; font-size: 11px; }
+    .mode-info { width: 25px; height: 25px; }
+    .mode-tooltip { right: -4px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-row">
+    <div>
+      <h1>🎓 İGÜ TTO Bilgi Asistanı</h1>
+      <p>Tamamen yerel çalışır — sorularınız bu bilgisayarın dışına çıkmaz.</p>
+    </div>
+    <div class="mode-control" id="modeControl">
+      <button class="mode-toggle" id="modeToggle" type="button" aria-pressed="false" aria-label="Ollama kullanımını aç">
+        <span class="mode-dot" aria-hidden="true"></span><span id="modeLabel">Ollama Kapalı</span>
+      </button>
+      <button class="mode-info" id="modeInfo" type="button" aria-label="Çalışma modları hakkında bilgi" aria-expanded="false">i</button>
+      <section class="mode-tooltip" id="modeTooltip" role="tooltip">
+        <h2>Yanıt modu nasıl çalışır?</h2>
+        <p><strong>Ollama kapalı:</strong> İlgili RAG kaynaklarından kısa metin bölümleri gösterilir. Ollama gerekmez.</p>
+        <p><strong>Ollama açık:</strong> RAG'de bulunan bilgiler yerel Ollama modeline gönderilir ve Türkçe yanıt oluşturulur. Ollama'nın ve modelin çalışır durumda olması gerekir.</p>
+        <p>FAQ'da doğrudan eşleşen sorular her iki modda da kayıtlı yanıtı kullanır.</p>
+      </section>
+    </div>
+  </div>
+</header>
+
+<div id="chat"></div>
+
+<footer>
+  <form id="form">
+    <input id="q" type="text" placeholder="Bir soru yazın..." autocomplete="off" />
+    <button id="send" type="submit">➤</button>
+  </form>
+</footer>
+
+<script>
+const chatEl = document.getElementById('chat');
+const formEl = document.getElementById('form');
+const qEl = document.getElementById('q');
+const sendEl = document.getElementById('send');
+const modeControlEl = document.getElementById('modeControl');
+const modeToggleEl = document.getElementById('modeToggle');
+const modeLabelEl = document.getElementById('modeLabel');
+const modeInfoEl = document.getElementById('modeInfo');
+let ollamaEnabled = localStorage.getItem('iguTtoOllamaEnabled') === 'true';
+
+function updateModeControl() {
+  modeToggleEl.setAttribute('aria-pressed', String(ollamaEnabled));
+  modeToggleEl.setAttribute('aria-label', ollamaEnabled ? 'Ollama kullanımını kapat' : 'Ollama kullanımını aç');
+  modeLabelEl.textContent = ollamaEnabled ? 'Ollama Açık' : 'Ollama Kapalı';
+}
+updateModeControl();
+
+modeToggleEl.addEventListener('click', () => {
+  ollamaEnabled = !ollamaEnabled;
+  localStorage.setItem('iguTtoOllamaEnabled', String(ollamaEnabled));
+  updateModeControl();
+});
+
+modeInfoEl.addEventListener('click', () => {
+  const isOpen = modeControlEl.classList.toggle('show-tooltip');
+  modeInfoEl.setAttribute('aria-expanded', String(isOpen));
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    modeControlEl.classList.remove('show-tooltip');
+    modeInfoEl.setAttribute('aria-expanded', 'false');
+  }
+});
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function addMessage(role, html, isError) {
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ' + role + (isError ? ' error' : '');
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.innerHTML = html;
+  wrap.appendChild(bubble);
+  chatEl.appendChild(wrap);
+  chatEl.scrollTop = chatEl.scrollHeight;
+  return wrap;
+}
+
+async function handleQuestion(question) {
+  addMessage('user', escapeHtml(question));
+  qEl.value = '';
+  sendEl.disabled = true;
+
+  const typingWrap = addMessage('bot', '<div class="typing"><span></span><span></span><span></span></div>');
+
+  try {
+    const res = await fetch('/api/ask', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/x-ndjson',
+      },
+      body: JSON.stringify({ question, ollama_enabled: ollamaEnabled }),
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || 'Bilinmeyen hata.');
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    const bubble = typingWrap.querySelector('.bubble');
+    let buffer = '';
+    let answer = '';
+    bubble.textContent = 'Yanıt hazırlanıyor...';
+
+    function handleEvent(line) {
+      if (!line.trim()) return;
+      const event = JSON.parse(line);
+      if (event.error) throw new Error(event.error);
+      if (event.token) {
+        answer += event.token;
+        bubble.textContent = answer;
+        chatEl.scrollTop = chatEl.scrollHeight;
+      }
+      if (event.sources && event.sources.length) {
+        const srcWrap = document.createElement('div');
+        srcWrap.className = 'sources';
+        srcWrap.append('Kaynak: ');
+        event.sources.forEach((source, index) => {
+          if (index) srcWrap.append(' | ');
+          if (source.url) {
+            const link = document.createElement('a');
+            link.href = source.url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.textContent = source.title;
+            srcWrap.appendChild(link);
+          } else {
+            srcWrap.append(document.createTextNode(source.title));
+          }
+        });
+        typingWrap.appendChild(srcWrap);
+      }
+    }
+
+    while (true) {
+      const { value, done } = await reader.read();
+      buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+      lines.forEach(handleEvent);
+      if (done) break;
+    }
+    if (buffer.trim()) handleEvent(buffer);
+    if (!answer) throw new Error('Yanıt alınamadı. Lütfen sorunuzu yeniden deneyin.');
+  } catch (e) {
+    typingWrap.classList.add('error');
+    typingWrap.querySelector('.bubble').textContent = e.message || 'Sunucuya ulaşılamadı. server.py çalışıyor mu?';
+  }
+
+  chatEl.scrollTop = chatEl.scrollHeight;
+  sendEl.disabled = false;
+  qEl.focus();
+}
+
+formEl.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const question = qEl.value.trim();
+  if (question) handleQuestion(question);
+});
+</script>
+</body>
+</html>

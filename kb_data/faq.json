@@ -1,0 +1,52 @@
+[
+  {
+    "q": "TTO nedir ve ne iş yapar?",
+    "a": "Teknoloji Transfer Ofisi (TTO), üniversitede üretilen akademik bilgi, araştırma sonuçları ve yenilikçi fikirlerin uygulamaya aktarılmasını destekleyen bir birimdir. Proje geliştirme, fon kaynaklarına erişim, fikri mülkiyet yönetimi, girişimcilik ve üniversite-sanayi iş birlikleri gibi alanlarda rehberlik sunar.",
+    "source": "official_faq"
+  },
+  {
+    "q": "Kimler TTO'ya başvurabilir?",
+    "a": "İGÜ bünyesinde çalışan akademisyenler, araştırma görevlileri ve öğrenciler TTO'ya başvurabilir. FAQ ayrıca akademisyenler, öğrenciler, araştırmacılar, kamu kurumları, özel sektör temsilcileri ve girişimcilerin TTO ile iletişime geçebileceğini belirtir.",
+    "source": "official_faq"
+  },
+  {
+    "q": "TTO hangi alanlarda destek verir?",
+    "a": "Proje destek programları, üniversite-sanayi iş birlikleri, patent süreçleri, girişimcilik, ticarileştirme ve eğitim organizasyonları gibi alanlarda destek sağlar.",
+    "source": "official_faq"
+  },
+  {
+    "q": "TTO projelerime nasıl finansman bulabilir?",
+    "a": "TTO, proje fikrine uygun ulusal ve uluslararası destek programlarının belirlenmesine yardımcı olabilir; FAQ'da TÜBİTAK, KOSGEB, Avrupa Birliği ve diğer fon kaynakları örneklenmektedir.",
+    "source": "official_faq"
+  },
+  {
+    "q": "Kendi şirketimi kurmak istiyorum, ne yapmalıyım?",
+    "a": "TTO; iş modeli geliştirme, iş planı hazırlama, mentorluk, yatırımcı görüşmeleri ve şirketleşme süreçlerinde yönlendirme sunar.",
+    "source": "official_faq"
+  },
+  {
+    "q": "Başvuru nasıl yapılır?",
+    "a": "TTO'nun resmi internet sitesinden başvuru formu doldurulabilir.",
+    "source": "official_faq"
+  },
+  {
+    "q": "Başvurum ne kadar sürede değerlendirilir?",
+    "a": "Değerlendirme süresi başvurunun niteliğine ve kapsamına göre değişebilir; gerekli incelemeler tamamlandıktan sonra başvuru sahibi bilgilendirilir.",
+    "source": "official_faq"
+  },
+  {
+    "q": "Patent ile faydalı model arasındaki fark nedir?",
+    "a": "TTO FAQ'sına göre patent daha kapsamlı inceleme süreçlerinden geçen ve daha güçlü koruma sağlayan bir fikri mülkiyet hakkıdır; faydalı model ise belirli teknik yeniliklerin daha kısa sürede korunmasına olanak tanıyan bir koruma yöntemidir.",
+    "source": "official_faq"
+  },
+  {
+    "q": "Fikrim nasıl korunabilir?",
+    "a": "TTO, patent, faydalı model, marka ve diğer fikri mülkiyet hakları konusunda danışmanlık sağlayarak uygun koruma yönteminin belirlenmesine yardımcı olur. İcat/buluşun kamuya açıklanmasından önce değerlendirme yapılmasının önemli olduğu TTO sayfasında vurgulanır.",
+    "source": "official_invention"
+  },
+  {
+    "q": "TTO'nun maliyeti nedir?",
+    "a": "TTO FAQ'sı, temel hizmetlerin genellikle ücretsiz olduğunu belirtir. Özel başvuru veya dış hizmet maliyetleri için güncel koşullar ayrıca doğrulanmalıdır.",
+    "source": "official_faq"
+  }
+]
