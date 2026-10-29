@@ -68,7 +68,7 @@ Artık soru sorabilirsin. Her şey bu bilgisayarda, yerel olarak çalışır.
    küçük bir Flask sunucusu) gönderir.
 2. Sunucu önce FAQ dosyasındaki 10 soruyu anlam temelli karşılaştırır ve güçlü
    bir eşleşme bulursa kayıtlı cevabı doğrudan döndürür.
-3. FAQ eşleşmezse, resmî TTO ve üniversite kaynaklarından derlenen bilgi tabanındaki 72 belgeyi tarar.
+3. FAQ eşleşmezse, TTO, üniversite ve kullanıcı tarafından eklenen kaynaklardan derlenen bilgi tabanındaki 91 belgeyi tarar.
 4. Üstteki `Ollama Açık/Kapalı` düğmesi kapalıysa eşleşen RAG metinlerini kaynaklarıyla gösterir. Açık olduğu zaman ilgili bağlamı yerel Ollama'ya gönderir ve Türkçe yanıt oluşturur.
 5. Bilgi tabanında yeterli içerik yoksa bunu açıkça bildirir.
 
